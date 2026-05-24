@@ -1,0 +1,43 @@
+# Core dependencies — pin exact versions in requirements.lock before Phase 3.
+# See phase-03 plan: requirements.lock must be locked before first training run.
+#
+# Secrets: WANDB_API_KEY, HF_TOKEN — load from env vars, never hardcode.
+
+# ML framework
+torch>=2.3.0          # pin to ==2.3.x in requirements.lock
+torchaudio>=2.3.0
+
+# Training
+deepspeed>=0.14.0     # pin to ==0.14.x in requirements.lock; ZeRO-2
+transformers>=4.42.0
+accelerate>=0.30.0
+trl>=0.9.0            # DPO/GSPO; pin before Phase 5
+
+# Audio
+librosa>=0.10.0
+soundfile>=0.12.0
+pesq>=0.0.4           # round-trip quality validation (Phase 2 only)
+pystoi>=0.3.3         # round-trip quality validation (Phase 2 only)
+
+# Evaluation
+jiwer>=3.0.0          # WER computation
+openai-whisper>=20231117  # WER scoring via Whisper-large
+
+# Data processing
+numpy>=1.26.0
+scipy>=1.13.0
+num2words>=0.5.13     # runtime text normalization (inference package)
+tqdm>=4.66.0
+
+# Monitoring
+wandb>=0.17.0
+
+# Demo (Phase 7 only — not included in pip inference package)
+# gradio>=4.0.0
+
+# Preprocessing tools (offline, Phase 2 only — NOT in pip package)
+# nemo_text_processing  # offline preprocessing only; do NOT import at inference time
+
+# Dev
+pytest>=8.0.0
+pytest-cov>=5.0.0

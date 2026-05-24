@@ -1,0 +1,28 @@
+# S2 High-Quality CPT stage configuration.
+# Inherits from configs/base.yaml.
+# Resumes from checkpoints/s1_general/final.pt.
+
+_base_: ../base.yaml
+
+data:
+  train_tiers: [tier1]         # Tier-1 only (~40h)
+  s1_data_mix_ratio: 0.20      # 20% S1 data to prevent catastrophic forgetting
+  long_form: false
+
+training:
+  stage: s2_hq_cpt
+  resume_from: checkpoints/s1_general/final.pt
+  max_steps: 30000             # target range: 20K–30K steps
+  lr: 2e-5
+  warmup_steps: 500
+  batch_size_per_device: 8
+  gradient_accumulation_steps: 4
+
+checkpointing:
+  output_dir: checkpoints/s2_hq_cpt/
+  keep_last_n: 2
+
+gate:
+  # Gate G2: WER ≥ 15% relative improvement vs S1; UTMOS ≥ +0.1.
+  # Retry: increase S1 mix to 40%.
+  pass

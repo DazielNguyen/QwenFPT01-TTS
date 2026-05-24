@@ -1,0 +1,38 @@
+# Speaker SFT configuration.
+# Inherits from configs/base.yaml.
+# Resumes from checkpoints/gspo/final.pt for each voice.
+
+_base_: ../base.yaml
+
+# voice: set per run (ryan | aiden | emma | sophia | oliver | isabella)
+voice: null  # REQUIRED — override on command line or per-voice config
+
+data:
+  speaker_dir: data/speaker_sft/${voice}/
+
+training:
+  stage: speaker_sft
+  resume_from: checkpoints/gspo/final.pt
+  max_epochs: 5               # 3–5 epochs with early stopping on val SIM
+  lr: 5e-6
+  batch_size_per_device: 4
+  gradient_accumulation_steps: 4
+
+model:
+  freeze_layers: [0, 23]      # freeze backbone layers 0–23
+  trainable:
+    - speaker_embedding        # speaker embedding table
+    - transformer_layers[24]   # top 4 layers (indices 24–27)
+    - transformer_layers[25]
+    - transformer_layers[26]
+    - transformer_layers[27]
+
+checkpointing:
+  output_dir: checkpoints/speaker_sft/${voice}/
+  keep_last_n: 2
+
+gate:
+  # Gate G6: ≥ 3 of 6 voices achieve SIM ≥ 0.82 on first attempt.
+  # Per-voice: retry with more reference audio or unfreeze 6 layers if SIM < 0.80.
+  sim_gate: 0.82
+  sim_retry_threshold: 0.80

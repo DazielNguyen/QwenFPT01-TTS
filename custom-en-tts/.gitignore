@@ -1,0 +1,69 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.Python
+env/
+venv/
+.venv/
+pip-wheel-metadata/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Secrets — NEVER commit these
+.env
+*.env
+secrets.yaml
+secrets.json
+*_secret*
+*_token*
+wandb_key*
+hf_token*
+
+# Data — too large for git; use DVC or document download steps in README
+data/raw/
+data/processed/
+data/tokenized/
+data/long_form/
+data/dpo_pairs/
+data/quality_tiers/
+data/speaker_sft/
+data/manifests/
+
+# Checkpoints — too large for git; push to HuggingFace Hub
+checkpoints/
+
+# Outputs
+outputs/dpo_audio/
+outputs/samples/
+# outputs/evals/ intentionally NOT ignored — eval JSON files should be committed
+
+# W&B run artifacts
+wandb/
+
+# Docker
+.dockerignore
+*.tar.gz
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Lock sentinel (generated at runtime)
+data/tokenized/.lock

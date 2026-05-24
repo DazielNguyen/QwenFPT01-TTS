@@ -1,0 +1,26 @@
+# DPO post-training configuration.
+# Inherits from configs/base.yaml.
+# Resumes from checkpoints/s3_long_context/final.pt.
+
+_base_: ../base.yaml
+
+data:
+  dpo_pairs: data/dpo_pairs/pairs.jsonl
+
+training:
+  stage: dpo
+  resume_from: checkpoints/s3_long_context/final.pt
+  max_epochs: 2
+  lr: 1e-6
+  beta: 0.1                    # KL penalty; monitor — abort if KL > 5.0
+  kl_abort_threshold: 5.0
+  batch_size_per_device: 4
+  gradient_accumulation_steps: 4
+
+checkpointing:
+  output_dir: checkpoints/dpo/
+  keep_last_n: 2
+
+gate:
+  # Gate G4: DPO preference accuracy > 60% on held-out val split.
+  pass

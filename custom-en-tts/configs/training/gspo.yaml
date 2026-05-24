@@ -1,0 +1,34 @@
+# GSPO post-training configuration.
+# Inherits from configs/base.yaml.
+# Resumes from checkpoints/dpo/final.pt.
+
+_base_: ../base.yaml
+
+training:
+  stage: gspo
+  resume_from: checkpoints/dpo/final.pt
+  lr: 5e-7
+  batch_size_per_device: 2
+  gradient_accumulation_steps: 8
+
+gspo:
+  group_size: 8                # G=8 samples per step
+  reward_weights:
+    wer: 0.4
+    utmos: 0.3
+    sim: 0.2
+    length_ok: 0.1
+  entropy_bonus: 0.01          # prevent reward collapse
+  diversity_threshold: 0.3     # unique 5-gram rate; double entropy if below this
+  whisper_model: whisper-tiny  # speed/accuracy tradeoff for reward WER scoring
+
+  # CRITICAL: Profile combined VRAM before launching (see phase-05 plan).
+  # reward_server: async_cpu_offload  # enable if VRAM > 140 GB across 2×A100s
+
+checkpointing:
+  output_dir: checkpoints/gspo/
+  keep_last_n: 2
+
+gate:
+  # Gate G5: WER ≥ 10% relative improvement vs S3; UTMOS ≥ +0.15 vs S3.
+  pass

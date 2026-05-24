@@ -1,0 +1,26 @@
+# S1 General pre-training stage configuration.
+# Inherits from configs/base.yaml.
+
+_base_: ../base.yaml
+
+data:
+  train_tiers: [tier1, tier2]   # ~90h combined
+  long_form: false
+
+training:
+  stage: s1_general
+  max_steps: 80000              # target range: 50K–80K steps
+  lr: 5e-4
+  warmup_steps: 2000
+  batch_size_per_device: 8
+  gradient_accumulation_steps: 4
+
+checkpointing:
+  output_dir: checkpoints/s1_general/
+  keep_last_n: 2
+
+gate:
+  # Gate G1: intelligible speech on ≥ 80% of 50 held-out sentences.
+  # Abort if grad norm > 5.0 for 1000 consecutive steps.
+  grad_norm_abort_threshold: 5.0
+  grad_norm_abort_window: 1000

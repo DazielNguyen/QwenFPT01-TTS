@@ -1,0 +1,34 @@
+# S3 Long-Context stage configuration.
+# Inherits from configs/base.yaml.
+# Resumes from checkpoints/s2_hq_cpt/final.pt.
+
+_base_: ../base.yaml
+
+model:
+  rope:
+    max_seq_len: 8192           # extended from 4096 for long-context training
+
+data:
+  train_tiers: [tier1, tier2]
+  long_form: true
+  long_form_dir: data/long_form/
+  long_form_ratio: 0.60         # 60% long-form / 40% standard sequences
+
+training:
+  stage: s3_long_context
+  resume_from: checkpoints/s2_hq_cpt/final.pt
+  max_steps: 20000
+  lr: 1e-5
+  warmup_steps: 500
+  batch_size_per_device: 2     # reduced for seq_len=8192 VRAM
+  gradient_accumulation_steps: 16
+  gradient_checkpointing: true  # required at seq_len=8192
+
+checkpointing:
+  output_dir: checkpoints/s3_long_context/
+  keep_last_n: 2
+
+gate:
+  # Gate G3: WER < 12% short; stable generation to 30s.
+  # Perplexity regression check: ≤ 10% increase vs S2 on short sequences.
+  pass

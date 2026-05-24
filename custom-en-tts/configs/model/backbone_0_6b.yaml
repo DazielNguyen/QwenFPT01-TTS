@@ -1,0 +1,33 @@
+# 0.6B backbone architecture configuration.
+# Placeholders — fill in exact values from Qwen3-TTS paper (arXiv:2601.15621).
+
+architecture:
+  type: qwen3_tts_backbone
+  n_layers: 28          # TODO: verify from paper
+  d_model: 1024         # TODO: verify from paper
+  n_heads: 16           # TODO: verify from paper
+  n_kv_heads: 8         # GQA: fewer KV heads than query heads
+  ffn_multiplier: 4
+  activation: swiglue
+  norm: rms_norm
+  tie_embeddings: false
+
+audio_tokenizer:
+  name: Qwen3-TTS-Tokenizer-12Hz
+  fps: 12.5
+  n_codebooks: 16
+  codebook_size: 2048
+  sample_rate: 24000
+  # checkpoint: loaded from HF_TOKEN env var — never hardcode here
+
+rope:
+  # D4 PENDING: RoPE extension method to be confirmed from paper Section 3.
+  # Current default: YaRN interpolation.
+  type: yarn          # options: base, yarn, ntk
+  base: 10000
+  max_seq_len: 4096   # extended to 8192 in S3 stage via config override
+
+sequence:
+  chat_format: chatml
+  bos_token_id: 151643  # TODO: verify from tokenizer vocab
+  eos_token_id: 151645  # TODO: verify from tokenizer vocab
