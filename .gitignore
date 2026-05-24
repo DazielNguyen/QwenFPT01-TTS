@@ -53,5 +53,12 @@ htmlcov/
 # Keep .mcp.json if you want teammates to share tool config; remove line below if so.
 # .mcp.json
 
+# ── Plans (local planning docs — not for public repo) ────────────────────────
+plans/
+**/plan.md
+**/plan-*.md
+**/phase-*.md
+Qwen3-TTS-CustomVoice-English-Agileplan.md
+
 # ── Project-level large assets (handled by custom-en-tts/.gitignore too) ─────
 # data/, checkpoints/, outputs/samples/ are gitignored inside custom-en-tts/
